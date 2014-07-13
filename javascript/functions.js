@@ -93,4 +93,38 @@ function Average(initialArray) {
     }
 
     return GetAverage(Filter(CheckEven, initialArray));
+};
+
+function First(array, condition) {
+    for(var i = 0, len = array.length; i < len; i++) {
+        if(condition(array[i])) {
+            return array[i];
+        }
+    }
+};
+
+function LazyEvaluation(Fun){
+    LazyEvaluation = function () {
+        return Array.prototype.slice.call(arguments);
+    };
+    return Fun.apply(this, arguments);
+
+}
+
+function Memoization(Fun) {
+    var cache = {};
+    var argument = arguments[0];
+
+    if(!argument) {
+        return;
+    }
+    return function() {
+        if (argument in cache) {
+            return cache[argument];
+        }
+        else {
+            Array.prototype.slice.call(arguments[0]);
+            cache[argument] = Fun.apply(this, Array.prototype.slice.call(arguments))
+        }
+    }
 }

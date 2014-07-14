@@ -48,8 +48,7 @@ function Unfold(callback, initialValue) {
     return unfoldResult;
 };
 
-function Map(Fun, initialArray)
-{
+function Map(Fun, initialArray){
     var mapResult = [];
     for (var i = 0, len = initialArray.length; i < len; i++) {
         mapResult[i] = Fun(initialArray[i]);
@@ -59,7 +58,6 @@ function Map(Fun, initialArray)
 
 function Filter(callback, initialArray) {
     var filteredArray = [];
-    var intermediateResult;
     for (var i = 0, len = initialArray.length; i < len; i++) {
         if (callback(initialArray[i])) {
             filteredArray.push(initialArray[i]);
@@ -75,7 +73,7 @@ function Average(initialArray) {
             return false;
         }
         else {
-            return num;
+            return true;
         }
     }
 
@@ -91,11 +89,24 @@ function Average(initialArray) {
 };
 
 function SumOfRandomNumbers(array){
+    function GetTenRandomNumbers() {
+        var min = 1;
+        var max = 25;
+        var randomMassive = [];
+        var rand;
+        for(var i = 0; i < 10; i++){
+            rand =  Math.floor(Math.random() * (max - min + 1)) + min;
+            console.log(rand);
+            randomMassive.push(rand);
+        }
+        return randomMassive;
+    }
+
     function callback(previous,current,index,array){
         return previous += current;
     }
 
-    return LinearFold(array,callback,0);
+    return LinearFold(GetTenRandomNumbers(),callback,0);
 
 };
 
@@ -108,25 +119,28 @@ function First(array, condition) {
 };
 
 function LazyEvaluation(Fun){
+    var args = Array.prototype.slice.call(arguments, 1);
     return function() {
-        return Fun.apply(this, Array.prototype.slice.call(arguments, 1));
+        return Fun.apply(this, args);
     };
 }
 
 function Memoization(Fun) {
     var cache = {};
-    var argument = arguments[0];
 
-    if(!argument) {
-        return;
-    }
-    return function() {
-        if (argument in cache) {
-            return cache[argument];
+    return function (argument) {
+        if (!argument) {
+            return;
         }
         else {
-            Array.prototype.slice.call(arguments[0]);
-            cache[argument] = Fun.apply(this, Array.prototype.slice.call(arguments))
+            var args = Array.prototype.slice.call(arguments);
+
+            if (argument in cache) {
+                return cache[argument];
+            }
+            else {
+                return cache[argument] = Fun.apply(this, args)
+            }
         }
     }
 }

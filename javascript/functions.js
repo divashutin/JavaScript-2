@@ -9,17 +9,7 @@ function PartialApplication(Fun){
     }
 };
 
-function add() {
-    for(var i = 0; i < arguments.length; i++)
-    {
-        console.log(arguments[i]);
-    }
-};
-
-var Part = PartialApplication(add, 2);
-Part(1);
-
-function curry(Fun) {
+function Curry(Fun) {
     var args = Array.prototype.slice.call(arguments, 1);
 
     return (function CurriedFunction(len){
@@ -71,12 +61,10 @@ function Filter(callback, initialArray) {
     var filteredArray = [];
     var intermediateResult;
     for (var i = 0, len = initialArray.length; i < len; i++) {
-        intermediateResult = callback(initialArray[i]);
-        if (intermediateResult) {
-            filteredArray.push(intermediateResult);
+        if (callback(initialArray[i])) {
+            filteredArray.push(initialArray[i]);
         }
     }
-    alert(filteredArray);
     return filteredArray;
 }
 
@@ -103,7 +91,6 @@ function Average(initialArray) {
 };
 
 function SumOfRandomNumbers(array){
-    var randomArray = [];
     function callback(previous,current,index,array){
         return previous += current;
     }

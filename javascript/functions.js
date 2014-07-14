@@ -7,27 +7,33 @@ function PartialApplication(Fun){
         var currentArguments = Array.prototype.slice.call(arguments);
         return Fun.apply( this, args.concat(currentArguments));
     }
-}
+};
 
 function add() {
     for(var i = 0; i < arguments.length; i++)
     {
         console.log(arguments[i]);
     }
-}
+};
 
 var Part = PartialApplication(add, 2);
 Part(1);
 
 function curry(Fun) {
     var args = Array.prototype.slice.call(arguments, 1);
-    var lenght = 0;
-    return (function CurriedFunction(){
+
+    return (function CurriedFunction(len){
+        if(!arguments[0]) {
+            var length = 0;
+        }
+        else {
+            length = arguments[0];
+        }
         return function() {
             args = args.concat(Array.prototype.slice.call(arguments));
-            lenght += Array.prototype.slice.call(args).length;
-            if(length < func.length){
-                return curriedFunction();
+            length += Array.prototype.slice.call(args).length;
+            if(length < Fun.length){
+                return CurriedFunction(length);
             }
             return Fun.apply(this, args)
         }
@@ -43,6 +49,7 @@ function LinearFold(array,callback, initialValue){
 
 function Unfold(callback, initialValue) {
     var unfoldResult = [];
+    var returnedResult = [];
     while(initialValue) {
         returnedResult = callback(initialValue);
         unfoldResult = returnedResult[0];
@@ -95,6 +102,16 @@ function Average(initialArray) {
     return GetAverage(Filter(CheckEven, initialArray));
 };
 
+function SumOfRandomNumbers(array){
+    var randomArray = [];
+    function callback(previous,current,index,array){
+        return previous += current;
+    }
+
+    return LinearFold(array,callback,0);
+
+};
+
 function First(array, condition) {
     for(var i = 0, len = array.length; i < len; i++) {
         if(condition(array[i])) {
@@ -104,11 +121,9 @@ function First(array, condition) {
 };
 
 function LazyEvaluation(Fun){
-    LazyEvaluation = function () {
-        return Array.prototype.slice.call(arguments);
+    return function() {
+        return Fun.apply(this, Array.prototype.slice.call(arguments, 1));
     };
-    return Fun.apply(this, arguments);
-
 }
 
 function Memoization(Fun) {
